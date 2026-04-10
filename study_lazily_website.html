@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Study Lazily — Study Smarter, Waste Less Time</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--ink:#1a1a18;--paper:#faf9f5;--cream:#f2f0e8;--blue:#2563eb;--blue-light:#dbeafe;
+--muted:#6b6b5f;--border:#e5e3d8;--card:#fff;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.6}
+a{text-decoration:none;color:inherit}
+
+/* NAV */
+nav{background:var(--paper);border-bottom:1.5px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;letter-spacing:-0.03em;display:flex;align-items:center;gap:8px}
+.logo-icon{width:28px;height:28px;background:var(--ink);border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--paper);font-size:14px}
+.nav-links{display:flex;gap:2rem;font-size:14px;font-weight:500}
+.nav-links a{color:var(--muted);transition:color .2s}
+.nav-links a:hover,.nav-links a.active{color:var(--ink)}
+.nav-cta{background:var(--ink);color:var(--paper);padding:8px 20px;border-radius:20px;font-size:14px;font-weight:500;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:opacity .2s}
+.nav-cta:hover{opacity:.8}
+
+/* PAGES */
+.page{display:none;min-height:calc(100vh - 64px)}
+.page.active{display:block}
+
+/* SEARCH BAR */
+.search-wrap{display:flex;align-items:center;gap:8px;background:var(--cream);border:1.5px solid var(--border);border-radius:24px;padding:8px 16px;max-width:280px}
+.search-wrap input{border:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--ink);outline:none;width:200px}
+.search-wrap input::placeholder{color:var(--muted)}
+
+/* HOME */
+.hero{padding:80px 2rem 60px;text-align:center;max-width:760px;margin:0 auto}
+.hero-eyebrow{display:inline-block;background:var(--blue-light);color:var(--blue);font-size:12px;font-weight:500;padding:4px 14px;border-radius:20px;margin-bottom:20px;letter-spacing:.04em}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(2.4rem,6vw,4rem);font-weight:800;line-height:1.1;letter-spacing:-0.03em;margin-bottom:16px}
+.hero h1 em{font-style:normal;color:var(--blue)}
+.hero p{font-size:1.1rem;color:var(--muted);margin-bottom:32px;max-width:520px;margin-left:auto;margin-right:auto}
+.btn-primary{background:var(--ink);color:var(--paper);padding:14px 32px;border-radius:24px;font-size:1rem;font-weight:500;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:opacity .2s;display:inline-block}
+.btn-primary:hover{opacity:.8}
+.btn-outline{background:transparent;color:var(--ink);padding:14px 32px;border-radius:24px;font-size:1rem;font-weight:500;cursor:pointer;border:1.5px solid var(--border);font-family:'DM Sans',sans-serif;transition:background .2s}
+.btn-outline:hover{background:var(--cream)}
+
+.section{padding:60px 2rem;max-width:1080px;margin:0 auto}
+.section-label{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.section-title{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:700;margin-bottom:32px;letter-spacing:-0.02em}
+.divider{border:none;border-top:1.5px solid var(--border);margin:0 2rem}
+
+/* CARDS */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
+.card{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:24px;transition:border-color .2s,transform .15s;cursor:pointer}
+.card:hover{border-color:#aaa;transform:translateY(-2px)}
+.card-tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:20px;margin-bottom:12px}
+.tag-math{background:#e0f2fe;color:#0369a1}
+.tag-eng{background:#fce7f3;color:#9d174d}
+.tag-ap{background:#f0fdf4;color:#166534}
+.tag-skill{background:#fef9c3;color:#854d0e}
+.tag-hack{background:#fdf4ff;color:#7e22ce}
+.card h3{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;margin-bottom:8px}
+.card p{font-size:14px;color:var(--muted);line-height:1.5}
+.card-footer{margin-top:16px;display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--muted)}
+.card-arrow{width:28px;height:28px;background:var(--cream);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px}
+
+/* AI BANNER */
+.ai-banner{background:var(--ink);color:var(--paper);border-radius:20px;padding:40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;margin:0 2rem}
+.ai-banner h2{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:700}
+.ai-banner p{font-size:14px;opacity:.7;margin-top:6px}
+.coming-soon-badge{background:rgba(255,255,255,.15);color:var(--paper);padding:8px 20px;border-radius:20px;font-size:13px;font-weight:500;border:1px solid rgba(255,255,255,.2)}
+
+/* COURSES */
+.course-hero{background:var(--cream);padding:60px 2rem 40px;border-bottom:1.5px solid var(--border)}
+.course-hero h1{font-family:'Syne',sans-serif;font-size:2.4rem;font-weight:800;letter-spacing:-0.03em}
+.course-hero p{color:var(--muted);margin-top:8px;font-size:1.05rem}
+.cat-tabs{display:flex;gap:10px;padding:24px 2rem;overflow-x:auto;border-bottom:1.5px solid var(--border)}
+.cat-tab{padding:8px 18px;border-radius:20px;border:1.5px solid var(--border);font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;background:var(--card);transition:all .2s}
+.cat-tab.active,.cat-tab:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.course-card{background:var(--card);border:1.5px solid var(--border);border-radius:16px;overflow:hidden;transition:transform .15s,border-color .2s;cursor:pointer}
+.course-card:hover{transform:translateY(-2px);border-color:#aaa}
+.course-card-header{padding:20px 24px 16px;border-bottom:1px solid var(--border)}
+.course-card-body{padding:20px 24px}
+.lesson-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px}
+.lesson-item:last-child{border-bottom:none}
+.lesson-num{width:24px;height:24px;background:var(--cream);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--muted);flex-shrink:0}
+
+/* BLOG */
+.blog-hero{background:var(--cream);padding:60px 2rem 40px;border-bottom:1.5px solid var(--border)}
+.blog-hero h1{font-family:'Syne',sans-serif;font-size:2.4rem;font-weight:800;letter-spacing:-0.03em}
+.blog-filter{display:flex;gap:10px;padding:24px 2rem;overflow-x:auto;border-bottom:1.5px solid var(--border)}
+.filter-btn{padding:7px 16px;border-radius:20px;border:1.5px solid var(--border);font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;background:var(--card);transition:all .2s}
+.filter-btn.active,.filter-btn:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.blog-card{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:24px;cursor:pointer;transition:all .2s}
+.blog-card:hover{border-color:#aaa;transform:translateY(-2px)}
+.blog-meta{font-size:12px;color:var(--muted);margin-top:12px}
+
+/* ABOUT */
+.about-hero{padding:80px 2rem 60px;max-width:760px;margin:0 auto;text-align:center}
+.about-hero h1{font-family:'Syne',sans-serif;font-size:2.8rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:16px}
+.about-hero p{color:var(--muted);font-size:1.1rem}
+.values-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px}
+.value-card{background:var(--cream);border-radius:16px;padding:24px}
+.value-icon{font-size:24px;margin-bottom:12px}
+.value-card h3{font-family:'Syne',sans-serif;font-weight:700;margin-bottom:8px}
+.value-card p{font-size:14px;color:var(--muted)}
+
+/* CONTACT */
+.contact-wrap{max-width:600px;margin:0 auto;padding:60px 2rem}
+.contact-wrap h1{font-family:'Syne',sans-serif;font-size:2.4rem;font-weight:800;margin-bottom:8px;letter-spacing:-0.03em}
+.contact-wrap p{color:var(--muted);margin-bottom:40px}
+.form-group{margin-bottom:20px}
+.form-group label{display:block;font-size:14px;font-weight:500;margin-bottom:8px}
+.form-group input,.form-group textarea{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--ink);background:var(--card);outline:none;transition:border-color .2s}
+.form-group input:focus,.form-group textarea:focus{border-color:var(--blue)}
+.form-group textarea{height:120px;resize:vertical}
+.submit-btn{background:var(--ink);color:var(--paper);padding:14px 32px;border-radius:24px;font-size:1rem;font-weight:500;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:opacity .2s;width:100%}
+.submit-btn:hover{opacity:.8}
+
+/* FOOTER */
+footer{border-top:1.5px solid var(--border);padding:40px 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;font-size:13px;color:var(--muted)}
+
+/* HACK LIST */
+.hack-list{display:flex;flex-direction:column;gap:12px}
+.hack-item{background:var(--cream);border-radius:12px;padding:16px 20px;display:flex;gap:16px;align-items:flex-start}
+.hack-num{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--border);line-height:1;flex-shrink:0;width:36px}
+.hack-item h4{font-weight:500;font-size:15px;margin-bottom:4px}
+.hack-item p{font-size:13px;color:var(--muted)}
+
+@media(max-width:600px){
+.nav-links{display:none}
+.ai-banner{flex-direction:column}
+.hero h1{font-size:2.2rem}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">
+    <div class="logo-icon">⚡</div>
+    Study Lazily
+  </div>
+  <div class="nav-links">
+    <a href="#" class="active" onclick="showPage('home',this)">Home</a>
+    <a href="#" onclick="showPage('courses',this)">Courses</a>
+    <a href="#" onclick="showPage('blog',this)">Study Guides</a>
+    <a href="#" onclick="showPage('about',this)">About</a>
+    <a href="#" onclick="showPage('contact',this)">Contact</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <div class="search-wrap">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--muted);flex-shrink:0"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="Search guides...">
+    </div>
+    <button class="nav-cta" onclick="showPage('courses',document.querySelector('.nav-links a:nth-child(2)'))">Get Started</button>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div id="home" class="page active">
+  <div class="hero">
+    <span class="hero-eyebrow">✦ Free Study Resources</span>
+    <h1>Study <em>smarter</em>,<br>waste less time</h1>
+    <p>High-quality study guides, shortcuts, and courses built for high school students who want to pass — without the stress.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <button class="btn-primary" onclick="showPage('courses',document.querySelector('.nav-links a:nth-child(2)'))">Start Learning →</button>
+      <button class="btn-outline" onclick="showPage('blog',document.querySelector('.nav-links a:nth-child(3)'))">Browse Study Guides</button>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section">
+    <div class="section-label">Featured this week</div>
+    <div class="section-title">Study Guides</div>
+    <div class="card-grid">
+      <div class="card" onclick="showPage('blog',document.querySelector('.nav-links a:nth-child(3)'))">
+        <span class="card-tag tag-math">Math</span>
+        <h3>Trig Identities Cheat Sheet</h3>
+        <p>Every identity you need for pre-calc and beyond, explained in plain English.</p>
+        <div class="card-footer"><span>5 min read</span><div class="card-arrow">→</div></div>
+      </div>
+      <div class="card" onclick="showPage('blog',document.querySelector('.nav-links a:nth-child(3)'))">
+        <span class="card-tag tag-eng">English</span>
+        <h3>How to Structure Any Essay</h3>
+        <p>A dead-simple framework for thesis, body, and conclusion that teachers actually love.</p>
+        <div class="card-footer"><span>7 min read</span><div class="card-arrow">→</div></div>
+      </div>
+      <div class="card" onclick="showPage('blog',document.querySelector('.nav-links a:nth-child(3)'))">
+        <span class="card-tag tag-ap">AP Prep</span>
+        <h3>AP Bio: Cell Division in 10 Mins</h3>
+        <p>Mitosis vs meiosis, simplified. Pass the AP exam without memorizing a textbook.</p>
+        <div class="card-footer"><span>10 min read</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section">
+    <div class="section-label">Top picks</div>
+    <div class="section-title">Popular Courses</div>
+    <div class="card-grid">
+      <div class="card" onclick="showPage('courses',document.querySelector('.nav-links a:nth-child(2)'))">
+        <span class="card-tag tag-math">Math & Trig</span>
+        <h3>Trigonometry Crash Course</h3>
+        <p>From unit circles to identities — everything covered in a logical order.</p>
+        <div class="card-footer"><span>8 lessons</span><div class="card-arrow">→</div></div>
+      </div>
+      <div class="card" onclick="showPage('courses',document.querySelector('.nav-links a:nth-child(2)'))">
+        <span class="card-tag tag-skill">Study Skills</span>
+        <h3>Active Recall Mastery</h3>
+        <p>Study less, remember more. Science-backed techniques for any subject.</p>
+        <div class="card-footer"><span>5 lessons</span><div class="card-arrow">→</div></div>
+      </div>
+      <div class="card" onclick="showPage('courses',document.querySelector('.nav-links a:nth-child(2)'))">
+        <span class="card-tag tag-eng">Essay Writing</span>
+        <h3>Write A+ Essays Fast</h3>
+        <p>Templates, transitions, and thesis tricks that save you hours.</p>
+        <div class="card-footer"><span>6 lessons</span><div class="card-arrow">→</div></div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section">
+    <div class="section-label">Study Hacks of the Week</div>
+    <div class="section-title" style="margin-bottom:20px">Work smarter, not harder</div>
+    <div class="hack-list">
+      <div class="hack-item">
+        <div class="hack-num">01</div>
+        <div>
+          <h4>Use the 50/10 rule instead of Pomodoro</h4>
+          <p>Study for 50 minutes, break for 10. Your brain handles deeper work in longer blocks — Pomodoro's 25 mins barely scratches the surface.</p>
+        </div>
+      </div>
+      <div class="hack-item">
+        <div class="hack-num">02</div>
+        <div>
+          <h4>Teach it out loud before the test</h4>
+          <p>Explain a concept to yourself like you're the teacher. If you stumble, that's exactly what you don't know yet.</p>
+        </div>
+      </div>
+      <div class="hack-item">
+        <div class="hack-num">03</div>
+        <div>
+          <h4>Highlight less, question more</h4>
+          <p>Instead of highlighting, write one question per paragraph. Forces your brain to actually process information.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding:0 2rem 60px">
+    <div class="ai-banner">
+      <div>
+        <h2>⚡ AI Study Assistant</h2>
+        <p>Get instant explanations, study plans, and concept breakdowns — personalized to you.</p>
+      </div>
+      <span class="coming-soon-badge">Coming Soon</span>
+    </div>
+  </div>
+</div>
+
+<!-- COURSES -->
+<div id="courses" class="page">
+  <div class="course-hero">
+    <div style="max-width:1080px;margin:0 auto">
+      <div class="section-label">Self-paced</div>
+      <h1>Courses</h1>
+      <p>Pick a subject, work through it at your own pace, and actually understand it.</p>
+    </div>
+  </div>
+  <div class="cat-tabs">
+    <button class="cat-tab active">All</button>
+    <button class="cat-tab">Math & Trig</button>
+    <button class="cat-tab">English & Essays</button>
+    <button class="cat-tab">AP Exam Prep</button>
+    <button class="cat-tab">Study Skills</button>
+  </div>
+  <div class="section">
+    <div class="card-grid">
+
+      <div class="course-card">
+        <div class="course-card-header">
+          <span class="card-tag tag-math">Math & Trig</span>
+          <h3 style="font-family:'Syne',sans-serif;font-weight:700">Trigonometry Crash Course</h3>
+          <p style="font-size:13px;color:var(--muted);margin-top:6px">Master every trig concept for pre-calc and SAT in one focused course.</p>
+        </div>
+        <div class="course-card-body">
+          <div class="lesson-item"><div class="lesson-num">1</div> Angles & the Unit Circle</div>
+          <div class="lesson-item"><div class="lesson-num">2</div> Sine, Cosine, Tangent</div>
+          <div class="lesson-item"><div class="lesson-num">3</div> Trig Identities</div>
+          <div class="lesson-item"><div class="lesson-num">4</div> Graphing Trig Functions</div>
+          <div class="lesson-item"><div class="lesson-num">5</div> Word Problems & Shortcuts</div>
+          <div style="margin-top:16px"><button class="btn-primary" style="font-size:13px;padding:10px 20px">View Course →</button></div>
+        </div>
+      </div>
+
+      <div class="course-card">
+        <div class="course-card-header">
+          <span class="card-tag tag-eng">English & Essays</span>
+          <h3 style="font-family:'Syne',sans-serif;font-weight:700">Write A+ Essays Fast</h3>
+          <p style="font-size:13px;color:var(--muted);margin-top:6px">Templates and frameworks for every type of essay your teacher will throw at you.</p>
+        </div>
+        <div class="course-card-body">
+          <div class="lesson-item"><div class="lesson-num">1</div> Writing a Killer Thesis</div>
+          <div class="lesson-item"><div class="lesson-num">2</div> Body Paragraph Formula</div>
+          <div class="lesson-item"><div class="lesson-num">3</div> Evidence & Analysis</div>
+          <div class="lesson-item"><div class="lesson-num">4</div> Introductions & Conclusions</div>
+          <div class="lesson-item"><div class="lesson-num">5</div> Timed Essay Strategy</div>
+          <div style="margin-top:16px"><button class="btn-primary" style="font-size:13px;padding:10px 20px">View Course →</button></div>
+        </div>
+      </div>
+
+      <div class="course-card">
+        <div class="course-card-header">
+          <span class="card-tag tag-ap">AP Exam Prep</span>
+          <h3 style="font-family:'Syne',sans-serif;font-weight:700">AP US History — 5 in a Week</h3>
+          <p style="font-size:13px;color:var(--muted);margin-top:6px">The most-tested concepts, DBQ strategy, and SAQ formula condensed.</p>
+        </div>
+        <div class="course-card-body">
+          <div class="lesson-item"><div class="lesson-num">1</div> Key Time Periods Overview</div>
+          <div class="lesson-item"><div class="lesson-num">2</div> DBQ Writing Formula</div>
+          <div class="lesson-item"><div class="lesson-num">3</div> SAQ Strategy</div>
+          <div class="lesson-item"><div class="lesson-num">4</div> Must-Know Vocab</div>
+          <div class="lesson-item"><div class="lesson-num">5</div> Full Practice Test Walkthrough</div>
+          <div style="margin-top:16px"><button class="btn-primary" style="font-size:13px;padding:10px 20px">View Course →</button></div>
+        </div>
+      </div>
+
+      <div class="course-card">
+        <div class="course-card-header">
+          <span class="card-tag tag-skill">Study Skills</span>
+          <h3 style="font-family:'Syne',sans-serif;font-weight:700">Active Recall Mastery</h3>
+          <p style="font-size:13px;color:var(--muted);margin-top:6px">Study less, retain more using the techniques top students actually use.</p>
+        </div>
+        <div class="course-card-body">
+          <div class="lesson-item"><div class="lesson-num">1</div> Why Passive Reading Fails</div>
+          <div class="lesson-item"><div class="lesson-num">2</div> Flashcard Systems That Work</div>
+          <div class="lesson-item"><div class="lesson-num">3</div> Spaced Repetition Setup</div>
+          <div class="lesson-item"><div class="lesson-num">4</div> The Feynman Technique</div>
+          <div class="lesson-item"><div class="lesson-num">5</div> Building a Study Schedule</div>
+          <div style="margin-top:16px"><button class="btn-primary" style="font-size:13px;padding:10px 20px">View Course →</button></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- BLOG -->
+<div id="blog" class="page">
+  <div class="blog-hero">
+    <div style="max-width:1080px;margin:0 auto">
+      <div class="section-label">Free resources</div>
+      <h1>Study Guides</h1>
+      <p>Short, practical, no-fluff guides written for students who want results.</p>
+    </div>
+  </div>
+  <div class="blog-filter">
+    <button class="filter-btn active">All</button>
+    <button class="filter-btn">Math Shortcuts</button>
+    <button class="filter-btn">Essay Writing</button>
+    <button class="filter-btn">Study Hacks</button>
+    <button class="filter-btn">Exam Prep Tips</button>
+  </div>
+  <div class="section">
+    <div class="card-grid">
+      <div class="blog-card">
+        <span class="card-tag tag-math">Math Shortcuts</span>
+        <h3 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:8px">Trig Identities Cheat Sheet</h3>
+        <p style="font-size:14px;color:var(--muted)">Every identity you need for pre-calc, AP Calc, and the SAT — formatted for quick review the night before.</p>
+        <div class="blog-meta">⏱ 5 min read &nbsp;·&nbsp; Math Shortcuts</div>
+      </div>
+      <div class="blog-card">
+        <span class="card-tag tag-eng">Essay Writing</span>
+        <h3 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:8px">How to Structure Any Essay</h3>
+        <p style="font-size:14px;color:var(--muted)">A simple 3-part framework that works for in-class essays, AP FRQs, and college applications.</p>
+        <div class="blog-meta">⏱ 7 min read &nbsp;·&nbsp; Essay Writing</div>
+      </div>
+      <div class="blog-card">
+        <span class="card-tag tag-hack">Study Hacks</span>
+        <h3 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:8px">The 3-Pass Reading Method</h3>
+        <p style="font-size:14px;color:var(--muted)">Read a chapter once and actually remember it. Works for history, science, and any dense textbook.</p>
+        <div class="blog-meta">⏱ 4 min read &nbsp;·&nbsp; Study Hacks</div>
+      </div>
+      <div class="blog-card">
+        <span class="card-tag tag-ap">Exam Prep</span>
+        <h3 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:8px">AP Bio: Cell Division in 10 Mins</h3>
+        <p style="font-size:14px;color:var(--muted)">Mitosis vs meiosis, simplified. All the diagrams and vocab you need — nothing more.</p>
+        <div class="blog-meta">⏱ 10 min read &nbsp;·&nbsp; Exam Prep Tips</div>
+      </div>
+      <div class="blog-card">
+        <span class="card-tag tag-math">Math Shortcuts</span>
+        <h3 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:8px">Quadratic Formula Shortcuts</h3>
+        <p style="font-size:14px;color:var(--muted)">Skip the full formula when you can. Faster methods for factoring, completing the square, and more.</p>
+        <div class="blog-meta">⏱ 6 min read &nbsp;·&nbsp; Math Shortcuts</div>
+      </div>
+      <div class="blog-card">
+        <span class="card-tag tag-hack">Study Hacks</span>
+        <h3 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:8px">How to Cram (The Smart Way)</h3>
+        <p style="font-size:14px;color:var(--muted)">When you only have one night: what to prioritize, how to review, and how to calm your nerves.</p>
+        <div class="blog-meta">⏱ 8 min read &nbsp;·&nbsp; Study Hacks</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<div id="about" class="page">
+  <div class="about-hero">
+    <div class="section-label">Our mission</div>
+    <h1>Built by a student,<br>for students</h1>
+    <p>Study Lazily exists because most study advice is bloated, boring, or written by people who forgot what high school actually feels like.</p>
+  </div>
+  <hr class="divider">
+  <div class="section">
+    <div class="section-label">What we believe</div>
+    <div class="section-title">Our values</div>
+    <div class="values-grid">
+      <div class="value-card">
+        <div class="value-icon">⚡</div>
+        <h3>Efficiency first</h3>
+        <p>Less time studying, better results. We cut the fluff and get to what actually matters on the test.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🎯</div>
+        <h3>Student-built</h3>
+        <p>Created by someone who's in the trenches — not a curriculum designer who hasn't seen a classroom in 20 years.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🔓</div>
+        <h3>Accessible</h3>
+        <p>Core study guides are always free. No paywalls on the basics. Every student deserves good resources.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🧠</div>
+        <h3>Science-backed</h3>
+        <p>Active recall, spaced repetition, interleaving — we use what the research says actually works.</p>
+      </div>
+    </div>
+  </div>
+  <div style="padding:0 2rem 60px">
+    <div class="ai-banner">
+      <div>
+        <h2>⚡ AI Study Assistant</h2>
+        <p>Coming soon — personalized explanations and study plans powered by AI.</p>
+      </div>
+      <span class="coming-soon-badge">Coming Soon</span>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div id="contact" class="page">
+  <div class="contact-wrap">
+    <div class="section-label">Get in touch</div>
+    <h1>Contact</h1>
+    <p>Have a suggestion, want to collab, or just want to say hi? Reach out.</p>
+    <div class="form-group">
+      <label>Your name</label>
+      <input type="text" placeholder="Jane Smith">
+    </div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" placeholder="jane@school.edu">
+    </div>
+    <div class="form-group">
+      <label>What's on your mind?</label>
+      <textarea placeholder="I'd love to see a guide on..."></textarea>
+    </div>
+    <button class="submit-btn" onclick="this.textContent='Message sent ✓';this.style.background='#166534'">Send Message</button>
+  </div>
+</div>
+
+<footer>
+  <div class="logo" style="font-size:1rem">
+    <div class="logo-icon" style="width:22px;height:22px;font-size:11px">⚡</div>
+    Study Lazily
+  </div>
+  <span>© 2025 Study Lazily · study smarter, waste less time</span>
+  <div style="display:flex;gap:16px">
+    <a href="#" onclick="showPage('blog',document.querySelector('.nav-links a:nth-child(3)'))">Study Guides</a>
+    <a href="#" onclick="showPage('courses',document.querySelector('.nav-links a:nth-child(2)'))">Courses</a>
+    <a href="#" onclick="showPage('contact',document.querySelector('.nav-links a:nth-child(5)'))">Contact</a>
+  </div>
+</footer>
+
+<script>
+function showPage(id,navEl){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
+  if(navEl)navEl.classList.add('active');
+  window.scrollTo(0,0);
+}
+document.querySelectorAll('.cat-tab,.filter-btn').forEach(btn=>{
+  btn.addEventListener('click',function(){
+    this.closest('.cat-tabs,.blog-filter').querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
